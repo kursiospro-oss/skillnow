@@ -1,0 +1,106 @@
+// This is a Prisma schema file for the SkillNow project
+
+// Import the necessary models
+model User {
+  id          Int      @id @default(autoincrement())
+  name        String 
+  email       String   @unique
+  techProfiles TechProfile[]
+}
+
+model TechProfile {
+  id          Int      @id @default(autoincrement())
+  title       String
+  ownerId     Int
+  owner       User     @relation(fields: [ownerId], references: [id])
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  techProfile TechProfile @relation(fields: [techProfileId], references: [id])
+  techProfileId Int
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  budget      Float
+  serviceId   Int
+  service     Service  @relation(fields: [serviceId], references: [id])
+}
+
+model Conversation {
+  id          Int      @id @default(autoincrement())
+  participants User[] @relation("ConversationParticipants")
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  content     String
+  senderId    Int
+  conversationId Int
+  sender      User     @relation(fields: [senderId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Proposal {
+  id          Int      @id @default(autoincrement())
+  jobId       Int
+  job         Job @relation(fields: [jobId], references: [id])
+  offeredPrice Float
+  createdAt   DateTime @default(now())
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  userId      Int
+  user        User @relation(fields: [userId], references: [id])
+  milestones   Milestone[]
+}
+
+model Milestone {
+  id          Int      @id @default(autoincrement())
+  title       String
+  projectId   Int
+  project     Project @relation(fields: [projectId], references: [id])
+  evidences   MilestoneEvidence[]
+}
+
+model MilestoneEvidence {
+  id          Int      @id @default(autoincrement())
+  title       String
+  milestoneId Int
+  milestone   Milestone @relation(fields: [milestoneId], references: [id])
+  fileUrl     String
+}
+
+model EscrowTransaction {
+  id          Int      @id @default(autoincrement())
+  amount      Float
+  projectId   Int
+  project     Project @relation(fields: [projectId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Dispute {
+  id          Int      @id @default(autoincrement())
+  projectId   Int
+  project     Project @relation(fields: [projectId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  projectId   Int
+  project     Project @relation(fields: [projectId], references: [id])
+  rating      Int
+  feedback    String
+  createdAt   DateTime @default(now())
+}
