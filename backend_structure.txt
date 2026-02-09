@@ -1,0 +1,8 @@
+backend/
+├── config/
+│   ├── database.js
+│   └── server.js
+├── controllers/
+├── models/
+├── routes/
+└── utils/
